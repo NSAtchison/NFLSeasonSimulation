@@ -29,9 +29,9 @@ Team::Team(string name, int digit, int divNum, int confNum) {
 }
 
 //Print function
-string Team::print() {
+void Team::print() {
     string winString = to_string(numWins);
     int numLosses = numGamesPlayed - numWins;
     string lossString = to_string(numLosses);
-    return team_name + "(" + winString + "-" + lossString + ")";
+    cout << team_name + "(" + winString + "-" + lossString + ")";
 }

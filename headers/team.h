@@ -24,7 +24,7 @@ class Team {
         Team(string name, int digit, int divNum, int confNum);
 
         //Print function
-        string print();
+        void print();
 };
 
 #endif
