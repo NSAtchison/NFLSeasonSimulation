@@ -119,43 +119,35 @@ void initializeTeams(Team tSet[]) {
     tSet[31] = Team("Washington Football Team", 31, 6, 2);
 }
 
-void playRegSeasonGame(Team t1, Team t2) {
-    float probability = TEAM_WIN_PERCENTAGE[t1.team_num][t2.team_num]; //Finds win percentage for Team 1 over Team 2
+void playRegSeasonGame(Team tSet[], int t1Num, int t2Num) {
+    float probability = TEAM_WIN_PERCENTAGE[t1Num][t2Num]; //Finds win percentage for Team 1 over Team 2
     float num = (rand() % 1001) / 1000.0;
     int winNum;
     if(num <= probability) { //Team 1 wins
-        t1.numWins++;
+        tSet[t1Num].numWins++;
         winNum = 1;
     } else { //Team 2 wins
-        t2.numWins++;
+        tSet[t2Num].numWins++;
         winNum = 2;
     }
-    t1.numGamesPlayed++;
-    t1.hasPlayed = true;
-    t2.numGamesPlayed++;
-    t2.hasPlayed = true;
-    printGameResults(winNum, t1, t2);
+    tSet[t1Num].numGamesPlayed++;
+    tSet[t1Num].hasPlayed = true;
+    tSet[t2Num].numGamesPlayed++;
+    tSet[t2Num].hasPlayed = true;
+    printGameResults(winNum, tSet[t1Num], tSet[t2Num]);
     cout << endl;
 }
 
 void regSeasonWeek(Team tSet[], int currWeek) {
-    Team opponent, currTeam;
+    int opponentNum;
+    cout << "WEEK " << currWeek + 1 << endl << endl;
     for(int i = 0; i < NUM_TEAMS; i++) { //Runs for every team
-        currTeam = tSet[i];
         if(tSet[i].hasPlayed == false && TEAM_SCHEDULE[currWeek][i] != -1) { //Checks if team has not played and is not on bye
-            opponent = tSet[TEAM_SCHEDULE[currWeek][i]]; //Finds opponent
-            playRegSeasonGame(currTeam, opponent); //Plays game
+            opponentNum = TEAM_SCHEDULE[currWeek][i]; //Finds opponent
+            playRegSeasonGame(tSet, i, opponentNum); //Plays game
         }
     }
-
-    //NOTE, TEAMS NOT BEING SET TO HAVE PLAYED
-    //NOTE, TEAMS NOT BEING SET TO HAVE PLAYED
-    //NOTE, TEAMS NOT BEING SET TO HAVE PLAYED
-    //NOTE, TEAMS NOT BEING SET TO HAVE PLAYED
-    //NOTE, TEAMS NOT BEING SET TO HAVE PLAYED
-    //NOTE, TEAMS NOT BEING SET TO HAVE PLAYED
-    //NOTE, TEAMS NOT BEING SET TO HAVE PLAYED
-    //NOTE, TEAMS NOT BEING SET TO HAVE PLAYED
+    cout << endl;
     
 }
 
