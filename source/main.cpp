@@ -69,7 +69,7 @@ const int TEAM_SCHEDULE[18][32] {
 
 void initializeTeams(Team tSet[]);
 
-void playRegSeasonGame(Team t1, Team t2);
+void playRegSeasonGame(Team tSet[], int t1Num, int t2Num);
 void regSeasonWeek(Team tSet[], int currWeek);
 void printGameResults(int num, Team t1, Team t2);
 
