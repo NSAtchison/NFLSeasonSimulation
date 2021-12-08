@@ -8,6 +8,7 @@ using namespace std;
 
 const int NUM_TEAMS = 32;
 
+// Array holding all time head-to-head win percentages for each team.
 const float TEAM_WIN_PERCENTAGE[32][32] = {
 //0      1      2      3      4      5      6      7      8      9      10     11     12     13     14     15     16     17     18     19     20     21     22     23     24     25     26     27     28     29     30     31
  {0.000, 0.484, 0.714, 0.583, 0.750, 0.667, 0.500, 0.663, 0.635, 0.864, 0.557, 0.653, 0.400, 0.500, 0.333, 0.731, 0.600, 0.714, 0.540, 0.769, 0.556, 0.533, 0.500, 0.636, 0.600, 0.492, 0.592, 0.525, 0.511, 0.476, 0.333, 0.619}, //Team 0 playing Team x
@@ -44,7 +45,7 @@ const float TEAM_WIN_PERCENTAGE[32][32] = {
  {0.381, 0.404, 0.571, 0.667, 0.438, 0.489, 0.500, 0.734, 0.617, 0.571, 0.349, 0.569, 0.600, 0.677, 0.143, 0.909, 0.538, 0.417, 0.338, 0.615, 0.545, 0.455, 0.393, 0.599, 0.333, 0.480, 0.437, 0.617, 0.333, 0.455, 0.538, 0.000}, // 31
 };
 
-
+// Array representing the 2021 NFL Season schedule
 const int TEAM_SCHEDULE[18][32] {
  //0  1  2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
 {30, 25, 16, 26, 24, 18, 20, 15, 29, 23, 27, 22, 14, 28, 12,  7,  2, 31,  5, 21,  6, 19, 11,  9,  4,  1,  3, 10, 13,  8,  0, 17}, //Week 1
@@ -67,17 +68,55 @@ const int TEAM_SCHEDULE[18][32] {
 {28, 22, 26, 24, 29, 20,  7,  6, 25, 15, 11, 10, 30, 14, 13,  9, 17, 16, 27, 21,  5, 19,  1, 31,  3,  8,  2, 18,  0,  4, 12, 23}, //Week 18
 };
 
+//Fill in data for the array tSet
 void initializeTeams(Team tSet[]);
 
+// Plays a game between 2 of the NFL teams
+// Input tSet[] is the array of NFL teams, t1Num and t2Num play each other
+// Updates the win and loss total for teams after the game has been played
+// probability based on all-time Head to head data
 void playRegSeasonGame(Team tSet[], int t1Num, int t2Num);
+
+// Simulates an entire week of NFL games
+// Input tSet[] is the array of NFL teams, currWeek is the current week in the season
+// post: num_wins updated for each NFL team
 void regSeasonWeek(Team tSet[], int currWeek);
+
+// Prints results of a played game
+// Input tSet[] is the array of NFL teams, t1 and t2 played each other
 void printGameResults(int num, Team t1, Team t2);
 
+// Prints if a team is on bye
+// Input: tSet[] is the array of NFL teams, currWeek is the current week in the season
+void printOnBye(Team tSet[], int currWeek);
+
+// Resets each team so that they are seen as having not played
+// Input: tSet[] is the array of NFL teams
+// post: has_played updated to false for every team
+void weeklyReset(Team tSet[]);
+
+// Prints the division rankings at the end of the season and puts the division winners into the playoffs
+// Input: tSet[] is the array of NFL teams
+// Output: Division rankings
+// post: division winners have made_playoffs set to true
+void divRankings(Team tSet[]);
+
+void findSmallest(int divArr[], Team tSet[]);
+void findLargest(int divArr[], Team tSet[]);
+void findMidOrd(int divArr[], Team tSet[]);
+void numSort(int divArr[], Team tSet[]);
+void printDivision(int divArr[], Team tSet[]);
+
 int main() {
+    // MAKE SURE TO ADD A SEED FOR RAND()
+
     Team nflTeams[32];
     initializeTeams(nflTeams);
-    regSeasonWeek(nflTeams, 0);
-
+    for(int week = 0; week < 18; week++) {
+        weeklyReset(nflTeams);
+        regSeasonWeek(nflTeams, week);
+    }
+    divRankings(nflTeams);
 }
 
 //SIDE NOTE WILL FIND RIGHT PLACE LATE
@@ -147,6 +186,8 @@ void regSeasonWeek(Team tSet[], int currWeek) {
             playRegSeasonGame(tSet, i, opponentNum); //Plays game
         }
     }
+    printOnBye(tSet, currWeek);
+
     cout << endl;
     
 }
@@ -164,3 +205,89 @@ void printGameResults(int num, Team t1, Team t2) {
     }
     
 }
+
+void printOnBye(Team tSet[], int currWeek) {
+    for(int i = 0; i < NUM_TEAMS; i++) { //Runs for every team
+        if(TEAM_SCHEDULE[currWeek][i] == -1) { //Checks if current team on bye
+            cout << tSet[i].team_name << " are on their bye week. ";
+        }
+    }
+    cout << endl;
+}
+
+void weeklyReset(Team tSet[]) {
+    for(int i = 0; i < NUM_TEAMS; i++) { //Runs for every team
+        tSet[i].hasPlayed = false;
+    }
+}
+
+void divRankings(Team tSet[]) { //NOT WORKING FOR LAST DIVISION (FIX)
+    int divArr[4] = {-1, -1, -1, -1}; //Initialize array to hold 4 teams for current division
+    int numTeamsFound = 0;
+    for (int i = 1; i < 9; i++) { //Runs for all 8 divisions
+    numTeamsFound = 0;
+        for (int j = 0; j < NUM_TEAMS; j++) { //Checks every team
+            if(tSet[j].team_div == i) { //Tests if current team is in current division being looked at
+                divArr[numTeamsFound] = j;
+                numTeamsFound++;
+            }
+        }
+    numSort(divArr, tSet);
+    printDivision(divArr, tSet);
+    }
+}
+
+void findSmallest(int divArr[], Team tSet[]) {
+    int tempNum = divArr[0]; //Holds number in first positon, as num1 will be smallest number after completion
+    if (tSet[divArr[1]].numWins <= tSet[divArr[0]].numWins && tSet[divArr[1]].numWins <= tSet[divArr[2]].numWins && tSet[divArr[1]].numWins <= tSet[divArr[3]].numWins) { //tests if num2 is smallest number
+        divArr[0] = divArr[1]; //Puts num2 in position of smallest number
+        divArr[1] = tempNum; //Places held number in position of number that replaced num1
+    } else if (tSet[divArr[2]].numWins <= tSet[divArr[0]].numWins && tSet[divArr[2]].numWins <= tSet[divArr[1]].numWins && tSet[divArr[2]].numWins <= tSet[divArr[3]].numWins) { //tests if num3 is smallest number
+        divArr[0] = divArr[2]; //Puts num3 in position of smallest number
+        divArr[2] = tempNum; //Places held number in position of number that replaced num1
+    } else if (tSet[divArr[3]].numWins <= tSet[divArr[0]].numWins && tSet[divArr[3]].numWins <= tSet[divArr[2]].numWins && divArr[3] <= tSet[divArr[1]].numWins) { //tests if num4 is smallest number
+        divArr[0] = divArr[3]; //Puts num4 in position of smallest number
+        divArr[3] = tempNum; //Places held number in position of number that replaced num1
+    }
+}
+
+void findLargest(int divArr[], Team tSet[]) {
+    int tempNum = divArr[3]; //Holds number currently in fourth position
+    if (tSet[divArr[1]].numWins >= tSet[divArr[2]].numWins && tSet[divArr[1]].numWins >= tSet[divArr[3]].numWins) { //Tests if num2 is largest number 
+        divArr[3] = divArr[1]; //num2 goes to largest number position
+        divArr[1] = tempNum; //number originally in num4 position placed at num2 position
+    } else if (tSet[divArr[2]].numWins >= tSet[divArr[1]].numWins && tSet[divArr[2]].numWins >= tSet[divArr[3]].numWins) { //Tests if num3 is largest number
+        divArr[3] = divArr[2]; //num3 goes to largest number position
+        divArr[2] = tempNum; //number originally in num4 position placed at num3 position
+    }
+}
+
+void findMidOrd(int divArr[], Team tSet[]) {
+    int tempNum = divArr[2]; //Holds number currently in third position
+    if (tSet[divArr[1]].numWins >= tSet[divArr[2]].numWins) {
+        divArr[2] = divArr[1]; //Places third highest number in third position if necessary
+        divArr[1] = tempNum; //Places number originally in third position in second position
+    }
+}
+
+void numSort(int divArr[], Team tSet[]) {
+    findSmallest(divArr, tSet); //Places smallest number in first position
+    findLargest(divArr, tSet); //Places largest number in fourth position
+    findMidOrd(divArr, tSet); //Orders the middle two positions to go from smallest to largest
+}
+
+void printDivision(int divArr[], Team tSet[]) {
+    for(int i = 3; i >= 0; i--) {
+        tSet[divArr[i]].print();
+        cout << endl;
+    }
+    cout << endl;
+} 
+
+
+
+
+// input first team
+// find the second team
+// compare the win totals of the teams
+// shift accordingly
