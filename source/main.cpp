@@ -101,14 +101,41 @@ void weeklyReset(Team tSet[]);
 // post: division winners have made_playoffs set to true
 void divRankings(Team tSet[]);
 
-void findSmallest(int divArr[], Team tSet[]);
-void findLargest(int divArr[], Team tSet[]);
-void findMidOrd(int divArr[], Team tSet[]);
-void numSort(int divArr[], Team tSet[]);
+// Finds the team with the least amount of wins
+// Input: divArr[] is an array containing the numbers correllating to the teams of the division currently being looked at
+//        tSet[] is the array of NFL teams; used so we can compared win totals
+// post: team with least amount of wins is placed in first position of divArr
+void divLeastWins(int divArr[], Team tSet[]);
+
+// Finds the team with the least amount of wins
+// Input: divArr[] is an array containing the numbers correllating to the teams of the division currently being looked at.
+//        At this point, the team with the least amount of wins has already been found.
+//        tSet[] is the array of NFL teams; used so we can compared win totals
+// post: team with most amount of wins is placed in fourth position of divArr
+void divMostWins(int divArr[], Team tSet[]);
+
+// Finds the correct ordering of the middle two teams within the division in terms of wins
+// Input: divArr[] is an array containing the numbers correllating to the teams of the division currently being looked at.
+//        At this point, the team with the least amount of wins and the team who won the division (most amount of wins) have already been found.
+//        tSet[] is the array of NFL teams; used so we can compared win totals
+// post: remaining two teams have been ordered correctly with the team with less wins placed at second positon of divArr and other placed at third position
+//       of divArr.
+void divMidWins(int divArr[], Team tSet[]);
+
+// Sorts the NFL teams in divArr by the number of wins they have from least amount to greatest (left to right, position 1->4)
+// Input: divArr[] is an array containing the numbers correllating to the teams of the division currently being looked at.
+//        tSet[] is the array of NFL teams; used so we can compared win totals
+// post:  divArr has been updated so that teams have been ordered by number of wins
+void divSort(int divArr[], Team tSet[]);
+
+// Prints out the division rankings after they have been sorted
+// Input: divArr[] Is an array containing the number correllating to the teams of the division currently being looked at.
+//        At this point, the array already should have been sorted from least amount of wins to greatest.
+//        tSet[] Is the array of NFL teams; used to get the names of each team
 void printDivision(int divArr[], Team tSet[]);
 
 int main() {
-    // MAKE SURE TO ADD A SEED FOR RAND()
+    srand(time(NULL));
 
     Team nflTeams[32];
     initializeTeams(nflTeams);
@@ -117,7 +144,12 @@ int main() {
         regSeasonWeek(nflTeams, week);
     }
     divRankings(nflTeams);
+
+    
+
 }
+
+
 
 //SIDE NOTE WILL FIND RIGHT PLACE LATE
 // NFC - 2, AFC - 1
@@ -221,7 +253,7 @@ void weeklyReset(Team tSet[]) {
     }
 }
 
-void divRankings(Team tSet[]) { //NOT WORKING FOR LAST DIVISION (FIX)
+void divRankings(Team tSet[]) {
     int divArr[4] = {-1, -1, -1, -1}; //Initialize array to hold 4 teams for current division
     int numTeamsFound = 0;
     for (int i = 1; i < 9; i++) { //Runs for all 8 divisions
@@ -232,48 +264,49 @@ void divRankings(Team tSet[]) { //NOT WORKING FOR LAST DIVISION (FIX)
                 numTeamsFound++;
             }
         }
-    numSort(divArr, tSet);
+    divSort(divArr, tSet);
     printDivision(divArr, tSet);
+    tSet[divArr[3]].madePlayoffs = true;
     }
 }
 
-void findSmallest(int divArr[], Team tSet[]) {
-    int tempNum = divArr[0]; //Holds number in first positon, as num1 will be smallest number after completion
-    if (tSet[divArr[1]].numWins <= tSet[divArr[0]].numWins && tSet[divArr[1]].numWins <= tSet[divArr[2]].numWins && tSet[divArr[1]].numWins <= tSet[divArr[3]].numWins) { //tests if num2 is smallest number
-        divArr[0] = divArr[1]; //Puts num2 in position of smallest number
-        divArr[1] = tempNum; //Places held number in position of number that replaced num1
-    } else if (tSet[divArr[2]].numWins <= tSet[divArr[0]].numWins && tSet[divArr[2]].numWins <= tSet[divArr[1]].numWins && tSet[divArr[2]].numWins <= tSet[divArr[3]].numWins) { //tests if num3 is smallest number
-        divArr[0] = divArr[2]; //Puts num3 in position of smallest number
-        divArr[2] = tempNum; //Places held number in position of number that replaced num1
-    } else if (tSet[divArr[3]].numWins <= tSet[divArr[0]].numWins && tSet[divArr[3]].numWins <= tSet[divArr[2]].numWins && divArr[3] <= tSet[divArr[1]].numWins) { //tests if num4 is smallest number
-        divArr[0] = divArr[3]; //Puts num4 in position of smallest number
-        divArr[3] = tempNum; //Places held number in position of number that replaced num1
+void divLeastWins(int divArr[], Team tSet[]) {
+    int tempNum = divArr[0]; //Holds team in the first position, which will be position of team with lowest number of wins
+    if (tSet[divArr[1]].numWins <= tSet[divArr[0]].numWins && tSet[divArr[1]].numWins <= tSet[divArr[2]].numWins && tSet[divArr[1]].numWins <= tSet[divArr[3]].numWins) { //Team who started in position 2 placed last in division
+        divArr[0] = divArr[1];  
+        divArr[1] = tempNum; 
+    } else if (tSet[divArr[2]].numWins <= tSet[divArr[0]].numWins && tSet[divArr[2]].numWins <= tSet[divArr[1]].numWins && tSet[divArr[2]].numWins <= tSet[divArr[3]].numWins) { //Team who started in position 3 placed last in division
+        divArr[0] = divArr[2]; 
+        divArr[2] = tempNum; 
+    } else if (tSet[divArr[3]].numWins <= tSet[divArr[0]].numWins && tSet[divArr[3]].numWins <= tSet[divArr[1]].numWins && tSet[divArr[3]].numWins <= tSet[divArr[2]].numWins) { //Team who started in position 4 placed last in division
+        divArr[0] = divArr[3]; 
+        divArr[3] = tempNum; 
     }
 }
 
-void findLargest(int divArr[], Team tSet[]) {
-    int tempNum = divArr[3]; //Holds number currently in fourth position
-    if (tSet[divArr[1]].numWins >= tSet[divArr[2]].numWins && tSet[divArr[1]].numWins >= tSet[divArr[3]].numWins) { //Tests if num2 is largest number 
-        divArr[3] = divArr[1]; //num2 goes to largest number position
-        divArr[1] = tempNum; //number originally in num4 position placed at num2 position
-    } else if (tSet[divArr[2]].numWins >= tSet[divArr[1]].numWins && tSet[divArr[2]].numWins >= tSet[divArr[3]].numWins) { //Tests if num3 is largest number
-        divArr[3] = divArr[2]; //num3 goes to largest number position
-        divArr[2] = tempNum; //number originally in num4 position placed at num3 position
+void divMostWins(int divArr[], Team tSet[]) {
+    int tempNum = divArr[3]; //Holds team in fourth position, which will be position of team who won the division
+    if (tSet[divArr[1]].numWins >= tSet[divArr[2]].numWins && tSet[divArr[1]].numWins >= tSet[divArr[3]].numWins) { //Team who is currently is 2nd positon won the division!
+        divArr[3] = divArr[1]; 
+        divArr[1] = tempNum; 
+    } else if (tSet[divArr[2]].numWins >= tSet[divArr[1]].numWins && tSet[divArr[2]].numWins >= tSet[divArr[3]].numWins) { //Team who is currently in 3 position won the division!
+        divArr[3] = divArr[2]; 
+        divArr[2] = tempNum; 
     }
 }
 
-void findMidOrd(int divArr[], Team tSet[]) {
-    int tempNum = divArr[2]; //Holds number currently in third position
-    if (tSet[divArr[1]].numWins >= tSet[divArr[2]].numWins) {
-        divArr[2] = divArr[1]; //Places third highest number in third position if necessary
-        divArr[1] = tempNum; //Places number originally in third position in second position
+void divMidWins(int divArr[], Team tSet[]) {
+    int tempNum = divArr[2]; //Holds team in third position, which will be position of team who placed 2nd in division
+    if (tSet[divArr[1]].numWins >= tSet[divArr[2]].numWins) { //Team who is currently in 2nd positions placed 2nd overall in the division
+        divArr[2] = divArr[1]; 
+        divArr[1] = tempNum; 
     }
 }
 
-void numSort(int divArr[], Team tSet[]) {
-    findSmallest(divArr, tSet); //Places smallest number in first position
-    findLargest(divArr, tSet); //Places largest number in fourth position
-    findMidOrd(divArr, tSet); //Orders the middle two positions to go from smallest to largest
+void divSort(int divArr[], Team tSet[]) {
+    divLeastWins(divArr, tSet); 
+    divMostWins(divArr, tSet); 
+    divMidWins(divArr, tSet); 
 }
 
 void printDivision(int divArr[], Team tSet[]) {
