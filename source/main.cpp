@@ -191,7 +191,7 @@ void initializeTeams(Team tSet[]) {
 }
 
 void playRegSeasonGame(Team tSet[], int t1Num, int t2Num) {
-    float probability = TEAM_WIN_PERCENTAGE[t1Num][t2Num]; //Finds win percentage for Team 1 over Team 2
+    float probability = TEAM_WIN_PERCENTAGE[t2Num][t1Num]; //Finds win percentage for Team 1 over Team 2
     float num = (rand() % 1001) / 1000.0;
     int winNum;
     if(num <= probability) { //Team 1 wins
@@ -315,12 +315,4 @@ void printDivision(int divArr[], Team tSet[]) {
         cout << endl;
     }
     cout << endl;
-} 
-
-
-
-
-// input first team
-// find the second team
-// compare the win totals of the teams
-// shift accordingly
+}
