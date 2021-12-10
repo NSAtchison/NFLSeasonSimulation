@@ -316,3 +316,11 @@ void printDivision(int divArr[], Team tSet[]) {
     }
     cout << endl;
 }
+
+
+// FUNCTIONS TO MAKE
+//
+// OVERALL SEEDING FUNCTION
+//      SEEDING DIVISION WINNERS
+//      SEEDING WILDCARDS
+// PLAYOFF SIMULATION (SIMILAR TO NCAA BRACKET EXAMPLE)
