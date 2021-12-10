@@ -2,7 +2,6 @@
 #include <string>
 #include <ctime>
 #include <random>
-// #include "..\headers\arrays.h"
 #include "..\headers\team.h"
 using namespace std;
 
@@ -134,6 +133,11 @@ void divSort(int divArr[], Team tSet[]);
 //        tSet[] Is the array of NFL teams; used to get the names of each team
 void printDivision(int divArr[], Team tSet[]);
 
+void playoffSeeding(Team tSet[]);
+void seedDivWinners(Team tSet[], int playoffArr[], int conference);
+void seedWildcards(Team tSet[], int playoffArr[], int conference);
+void printConfSeeding(Team tSet[], int playoffArr[]);
+
 int main() {
     srand(time(NULL));
 
@@ -144,6 +148,7 @@ int main() {
         regSeasonWeek(nflTeams, week);
     }
     divRankings(nflTeams);
+    playoffSeeding(nflTeams);
 
     
 
@@ -316,6 +321,67 @@ void printDivision(int divArr[], Team tSet[]) {
     }
     cout << endl;
 }
+
+void playoffSeeding(Team tSet[]) {
+    int playoffTeamsSeed[7] = {-1, -1, -1, -1, -1, -1, -1};
+    for (int i = 1; i < 3; i++) {
+        seedDivWinners(tSet, playoffTeamsSeed, i);
+        seedWildcards(tSet, playoffTeamsSeed, i);
+        printConfSeeding(tSet, playoffTeamsSeed);
+        cout << endl;
+    }
+}
+
+void seedDivWinners(Team tSet[], int playoffArr[], int conference) {
+int numTeamsSeeded = 0, tempNum;
+    for(int j = 0; j < NUM_TEAMS; j++) {
+        if(tSet[j].madePlayoffs == true && tSet[j].team_conf == conference) {
+            if(numTeamsSeeded == 0) {
+                playoffArr[numTeamsSeeded] = j;
+            } else if(numTeamsSeeded != 0) {
+                for(int seededTeams = 0; seededTeams <= numTeamsSeeded; seededTeams++) { //Checks every team seeded so far
+                    if(tSet[j].numWins > tSet[playoffArr[seededTeams]].numWins) { //Checks if team has more wins than already seeded team we are looking at
+                        for(int maxTeams = numTeamsSeeded; maxTeams > seededTeams; maxTeams--) { //Moving everything to the inputted index over
+                            playoffArr[maxTeams] = playoffArr[maxTeams - 1];
+                        }
+                        playoffArr[seededTeams] = j;
+                    }
+                }
+            }
+            numTeamsSeeded++;
+        }
+    }
+}
+
+void seedWildcards(Team tSet[], int playoffArr[], int conference) {
+    int mostWinTeam; bool foundFirstTeam = false;
+    for(int currSeed = 4; currSeed < 7; currSeed++) {
+        foundFirstTeam = false;
+        for(int currTeam = 0; currTeam < NUM_TEAMS; currTeam++) {
+            if(tSet[currTeam].madePlayoffs == false && tSet[currTeam].team_conf == conference) {
+                if(foundFirstTeam == false) {
+                    mostWinTeam = currTeam;
+                    foundFirstTeam = true;
+                } else {
+                    if(tSet[currTeam].numWins > tSet[mostWinTeam].numWins) {
+                        mostWinTeam = currTeam;
+                    }
+                }
+            }
+            tSet[mostWinTeam].madePlayoffs == true;
+            playoffArr[currSeed] = mostWinTeam;
+        }
+    }
+}
+
+void printConfSeeding(Team tSet[], int playoffArr[]) {
+    for(int i = 0; i < 7; i++) {
+        cout << i + 1 << ". ";
+        tSet[playoffArr[i]].print();
+        cout << endl;
+    }
+}
+
 
 
 // FUNCTIONS TO MAKE
