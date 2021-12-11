@@ -133,23 +133,32 @@ void divSort(int divArr[], Team tSet[]);
 //        tSet[] Is the array of NFL teams; used to get the names of each team
 void printDivision(int divArr[], Team tSet[]);
 
-void playoffSeeding(Team tSet[]);
+void playoffSeeding(Team tSet[], int NFC[], int AFC[]);
 void seedDivWinners(Team tSet[], int playoffArr[], int conference);
 void seedWildcards(Team tSet[], int playoffArr[], int conference);
 void printConfSeeding(Team tSet[], int playoffArr[]);
+void inputSeedValues(Team tSet[], int playoffArr[]);
+void simWildcard(Team tSet[], int NFC[], int AFC[]);
+void simDivisional(Team tSet[], int NFC[], int AFC[]);
+void simConfDivsional(Team tSet[], int conference[]);
 
 int main() {
     srand(time(NULL));
 
     Team nflTeams[32];
+    int NFCPlayoffTeams[7] = {-1, -1, -1, -1, -1, -1, -1};
+    int AFCPlayoffTeams[7] = {-1, -1, -1, -1, -1, -1, -1};
     initializeTeams(nflTeams);
     for(int week = 0; week < 18; week++) {
         weeklyReset(nflTeams);
         regSeasonWeek(nflTeams, week);
     }
     divRankings(nflTeams);
-    playoffSeeding(nflTeams);
-
+    playoffSeeding(nflTeams, NFCPlayoffTeams, AFCPlayoffTeams);
+    cout << endl;
+    simWildcard(nflTeams, NFCPlayoffTeams, AFCPlayoffTeams);
+    simDivisional(nflTeams, NFCPlayoffTeams, AFCPlayoffTeams);
+    
     
 
 }
@@ -322,43 +331,57 @@ void printDivision(int divArr[], Team tSet[]) {
     cout << endl;
 }
 
-void playoffSeeding(Team tSet[]) {
-    int playoffTeamsSeed[7] = {-1, -1, -1, -1, -1, -1, -1};
-    for (int i = 1; i < 3; i++) {
-        seedDivWinners(tSet, playoffTeamsSeed, i);
-        seedWildcards(tSet, playoffTeamsSeed, i);
-        printConfSeeding(tSet, playoffTeamsSeed);
-        cout << endl;
-    }
+void playoffSeeding(Team tSet[], int NFC[], int AFC[]) {
+    cout << "NFC SEEDING" << endl;
+    seedDivWinners(tSet, NFC, 2);
+    seedWildcards(tSet, NFC, 2);
+    printConfSeeding(tSet, NFC);
+    inputSeedValues(tSet, NFC);
+    cout << endl << "AFC SEEDING" << endl;
+    seedDivWinners(tSet, AFC, 1);
+    seedWildcards(tSet, AFC, 1);
+    printConfSeeding(tSet, AFC);
+    inputSeedValues(tSet, AFC);
 }
 
 void seedDivWinners(Team tSet[], int playoffArr[], int conference) {
-int numTeamsSeeded = 0, tempNum;
-    for(int j = 0; j < NUM_TEAMS; j++) {
-        if(tSet[j].madePlayoffs == true && tSet[j].team_conf == conference) {
+int numTeamsSeeded = 0; bool currTeamSeeded;
+    for(int i = 0; i < NUM_TEAMS; i++) {
+        if(tSet[i].madePlayoffs == true && tSet[i].team_conf == conference) {
+            currTeamSeeded = false;
             if(numTeamsSeeded == 0) {
-                playoffArr[numTeamsSeeded] = j;
+                playoffArr[numTeamsSeeded] = i;
+                currTeamSeeded = true;
             } else if(numTeamsSeeded != 0) {
-                for(int seededTeams = 0; seededTeams <= numTeamsSeeded; seededTeams++) { //Checks every team seeded so far
-                    if(tSet[j].numWins > tSet[playoffArr[seededTeams]].numWins) { //Checks if team has more wins than already seeded team we are looking at
-                        for(int maxTeams = numTeamsSeeded; maxTeams > seededTeams; maxTeams--) { //Moving everything to the inputted index over
-                            playoffArr[maxTeams] = playoffArr[maxTeams - 1];
+                for(int j = 0; j < numTeamsSeeded; j++) { //Checks all teams already seeded
+                    if(tSet[i].numWins > tSet[playoffArr[j]].numWins) {
+                        for(int k = 3; k > j; k--) {
+                            playoffArr[k] = playoffArr[k-1];
                         }
-                        playoffArr[seededTeams] = j;
+                    playoffArr[j] = i;
+                    currTeamSeeded = true;
+                    }
+                    if (currTeamSeeded == true) {
+                        break;
                     }
                 }
+                if (currTeamSeeded == false) {
+                    playoffArr[numTeamsSeeded] = i;
+                }
+
             }
             numTeamsSeeded++;
         }
     }
 }
 
+
 void seedWildcards(Team tSet[], int playoffArr[], int conference) {
     int mostWinTeam; bool foundFirstTeam = false;
-    for(int currSeed = 4; currSeed < 7; currSeed++) {
-        foundFirstTeam = false;
-        for(int currTeam = 0; currTeam < NUM_TEAMS; currTeam++) {
-            if(tSet[currTeam].madePlayoffs == false && tSet[currTeam].team_conf == conference) {
+    for(int currSeed = 4; currSeed < 7; currSeed++) { //Runs for each of wildcard Seeds
+        foundFirstTeam = false; //Resets to finding first team for current seed
+        for(int currTeam = 0; currTeam < NUM_TEAMS; currTeam++) { //Runs for every team
+            if(tSet[currTeam].madePlayoffs == false && tSet[currTeam].team_conf == conference) { //Checking if current team is not in playoffs and is in current conference
                 if(foundFirstTeam == false) {
                     mostWinTeam = currTeam;
                     foundFirstTeam = true;
@@ -368,7 +391,7 @@ void seedWildcards(Team tSet[], int playoffArr[], int conference) {
                     }
                 }
             }
-            tSet[mostWinTeam].madePlayoffs == true;
+            tSet[mostWinTeam].madePlayoffs = true;
             playoffArr[currSeed] = mostWinTeam;
         }
     }
@@ -382,6 +405,69 @@ void printConfSeeding(Team tSet[], int playoffArr[]) {
     }
 }
 
+void inputSeedValues(Team tSet[], int playoffArr[]) {
+    for(int i = 0; i < 7; i++) {
+        if(i == 0) {
+            tSet[playoffArr[i]].currPlayoffRound = 1;
+        }
+        tSet[playoffArr[i]].playoffSeed = i + 1;
+    }
+}
+
+
+void playPlayoffGame(Team tSet[], int t1Num, int t2Num) {
+    float probability = TEAM_WIN_PERCENTAGE[t2Num][t1Num]; //Finds win percentage for Team 1 over Team 2
+    float num = (rand() % 1001) / 1000.0;
+    int winNum;
+    if(num <= probability) { //Team 1 wins
+        tSet[t1Num].currPlayoffRound++;
+        winNum = 1;
+    } else { //Team 2 wins
+        tSet[t2Num].currPlayoffRound++;
+        winNum = 2;
+    }   
+    printGameResults(winNum, tSet[t1Num], tSet[t2Num]);
+    cout << endl;
+}
+
+void simWildcard(Team tSet[], int NFC[], int AFC[]) {
+    cout << "NFC WILDCARD ROUND" << endl;
+    playPlayoffGame(tSet, NFC[1], NFC[6]);
+    playPlayoffGame(tSet, NFC[2], NFC[5]);
+    playPlayoffGame(tSet, NFC[3], NFC[4]);
+    cout << endl << "AFC WILDCARD ROUND" << endl;
+    playPlayoffGame(tSet, AFC[1], AFC[6]);
+    playPlayoffGame(tSet, AFC[2], AFC[5]);
+    playPlayoffGame(tSet, AFC[3], AFC[4]);
+    cout << endl;
+}
+
+void simDivisional(Team tSet[], int NFC[], int AFC[]) {
+    cout << "NFC DIVISIONAL ROUND" << endl;
+    simConfDivsional(tSet, NFC);
+    cout << endl << "AFC DIVISIONAL ROUND" << endl;
+    simConfDivsional(tSet, AFC);
+    cout << endl;
+}
+
+void simConfDivsional(Team tSet[], int conference[]) {
+    bool foundLowestSeed = false; int currSeed = 6, match2FoundTeams = 0; int match2[2] = {-1, -1};
+    while(foundLowestSeed == false) {
+        if(tSet[conference[currSeed]].currPlayoffRound == 1) {
+            playPlayoffGame(tSet, conference[0], conference[currSeed]);
+            foundLowestSeed = true;
+        }
+        currSeed--;
+    }
+    while (match2FoundTeams != 2) {
+        if(tSet[conference[currSeed]].currPlayoffRound == 1) {
+            match2[match2FoundTeams] = conference[currSeed];
+            match2FoundTeams++;
+        }
+        currSeed--;
+    }
+    playPlayoffGame(tSet, match2[1], match2[0]);
+}
 
 
 // FUNCTIONS TO MAKE

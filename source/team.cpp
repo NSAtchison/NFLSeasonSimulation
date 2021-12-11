@@ -13,6 +13,7 @@ Team::Team() {
     hasPlayed = false;
     madePlayoffs = false;
     playoffSeed = 0;
+    currPlayoffRound = 0;
 }
 
 //variable constructor
@@ -26,6 +27,7 @@ Team::Team(string name, int digit, int divNum, int confNum) {
     hasPlayed = false;
     madePlayoffs = false;
     playoffSeed = 0;
+    currPlayoffRound = 0;
 }
 
 //Print function

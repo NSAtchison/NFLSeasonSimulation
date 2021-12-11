@@ -15,6 +15,7 @@ class Team {
         bool hasPlayed;
         bool madePlayoffs;
         int playoffSeed;
+        int currPlayoffRound;
 
     //Behaviors
     //default constructor
