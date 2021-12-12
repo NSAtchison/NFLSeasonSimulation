@@ -133,10 +133,33 @@ void divSort(int divArr[], Team tSet[]);
 //        tSet[] Is the array of NFL teams; used to get the names of each team
 void printDivision(int divArr[], Team tSet[]);
 
+// Finds and seeds all the the teams that made the playoffs from 1-7
+// Input: tSet[] is an array of NFL teams; used to get the names of each team as well as their win totals used for seeing if they made the playoffs
+//        NFC[] is an array used to hold the playoff teams from the NFC Conference
+//        AFC[] is an array used to hold the playoff teams from the AFC Conference
+//  post: madePlayoffs for all playoff teams has been updated to true. NFC[] and AFC[] have been filled with all playoff teams
 void playoffSeeding(Team tSet[], int NFC[], int AFC[]);
+
+// Finds all the division winners for a conference and seeds them from 1-4
+// Input: tSet[] is an array of NFL teams; used to get the names of each team as well as their win totals used for seeing if they made the playoffs
+//        playoffArr[] is an array containing all of the playoff teams for a specific conference
+//        conference an an integer indicating what conference is being seeded
+//  post: playoffArr[] is updated in the first four indices
 void seedDivWinners(Team tSet[], int playoffArr[], int conference);
+
+// Finds the three remaining playoff teams for a conference and seeds them from 5-7
+// Input: tSet[] is an array of NFL teams; used to get the names of each team as well as their win totals used for seeing if they made the playoffs
+//        playoffArr[] is an array containing all of the playoff teams for a specific conference
+//        conference an an integer indicating what conference is being seeded
+//  post: playoffArr[] is updated in the final three indices
 void seedWildcards(Team tSet[], int playoffArr[], int conference);
+
+// Prints the both the AFC and NFC playoff teams in seeding order
+// Input: tSet[] is an array of NFL teams; used to get the names of each team
+//        playoffArr[] is an array containing all of the playoff teams for a specific conference
 void printConfSeeding(Team tSet[], int playoffArr[]);
+
+
 void inputSeedValues(Team tSet[], int playoffArr[]);
 void simWildcard(Team tSet[], int NFC[], int AFC[]);
 void simDivisional(Team tSet[], int NFC[], int AFC[]);
