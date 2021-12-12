@@ -189,19 +189,19 @@ void simDivisional(Team tSet[], int NFC[], int AFC[]);
 void simConfDivsional(Team tSet[], int conference[]);
 
 int main() {
-    srand(time(NULL));
+    srand(time(NULL)); //Random seed for game simulations
 
     Team nflTeams[32];
-    int NFCPlayoffTeams[7] = {-1, -1, -1, -1, -1, -1, -1};
-    int AFCPlayoffTeams[7] = {-1, -1, -1, -1, -1, -1, -1};
+    int NFCPlayoffTeams[7] = {-1, -1, -1, -1, -1, -1, -1}; //Intilized to -1 as to have a value not representing a team
+    int AFCPlayoffTeams[7] = {-1, -1, -1, -1, -1, -1, -1}; //Intilized to -1 as to have a value not representing a team
     initializeTeams(nflTeams);
-    for(int week = 0; week < 18; week++) {
+    for(int week = 0; week < 18; week++) { //Runs for every week of the NFL regular season
         weeklyReset(nflTeams);
         regSeasonWeek(nflTeams, week);
     }
     divRankings(nflTeams);
     playoffSeeding(nflTeams, NFCPlayoffTeams, AFCPlayoffTeams);
-    cout << endl;
+    cout << endl; //Gap for printing purposes
     simWildcard(nflTeams, NFCPlayoffTeams, AFCPlayoffTeams);
     simDivisional(nflTeams, NFCPlayoffTeams, AFCPlayoffTeams);
     
@@ -209,8 +209,9 @@ int main() {
 
 
 
-//SIDE NOTE WILL FIND RIGHT PLACE LATE
+// Conference Relation:
 // NFC - 2, AFC - 1
+// Division Relation:
 // AFC North - 1, AFC East - 2, AFC South - 3, AFC West - 4
 // NFC North - 5, NFC East - 6, NFC South - 7, NFC West - 8
 void initializeTeams(Team tSet[]) {
