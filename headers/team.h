@@ -14,7 +14,6 @@ class Team {
         int numGamesPlayed;
         bool hasPlayed;
         bool madePlayoffs;
-        int playoffSeed;
         int currPlayoffRound;
 
     //Behaviors

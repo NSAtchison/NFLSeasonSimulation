@@ -12,7 +12,6 @@ Team::Team() {
     numGamesPlayed = 0;
     hasPlayed = false;
     madePlayoffs = false;
-    playoffSeed = 0;
     currPlayoffRound = 0;
 }
 
@@ -26,7 +25,6 @@ Team::Team(string name, int digit, int divNum, int confNum) {
     numGamesPlayed = 0;
     hasPlayed = false;
     madePlayoffs = false;
-    playoffSeed = 0;
     currPlayoffRound = 0;
 }
 
