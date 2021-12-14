@@ -49,8 +49,12 @@ NOTE: Arrows indicate what functions are in other functions on a single lines (i
 2. Simplest way of deciding games was head-to-head data
 3. playoff rounds allow us to indicate who's still in playoffs
 4. printing division rankings allowed us to easily find division winners
-5. using arrays rather than a attribute for Teams allowed us to easily simulate playoffs
+5. using arrays rather than a attribute for Teams allowed us to easily simulate playoffs (for seeding)
 6. Having a schedule array allowed us to easily find teams who played each other
+7. Using numbers to help indicate teams allowed for easier use when it came to scheduling/finding win percentages
+8. Array of teams initilized at the start made for easy access to each team when necessary
+9. Lack of return values because arrays were much easiers to deal with when it came to this simulation
+10. Tons of breaking down of functions into multiple parts as each part was simpler on it's own (also allowed for us to easily find bugs if there was any)
 
 **Works Cited**
 Resources used:
