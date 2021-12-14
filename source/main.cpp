@@ -188,6 +188,40 @@ void simDivisional(Team tSet[], int NFC[], int AFC[]);
 // post: Winners of every divisional game will have currPlayoffRound increased by 1
 void simConfDivsional(Team tSet[], int conference[]);
 
+// Finds the two teams competing in a playoff match
+// Input: tSet[] is an array of NFL teams; used to get the names of each team
+//        conference[] is the array of a conferences playoff teams
+//        teams[] is an array that will hold the teams playing in the current playoff game
+//        currRound is the current round of the playoffs
+//        currSeed is the first seed we check to see if they play in this game
+//  post: teams[] is updated with the teams playing
+void findPlayoffMatch(Team tSet[], int conference[], int teams[], int currRound, int currSeed);
+
+// Simulates the conference championship round for both conferences
+// Input: tSet[] is an array of NFL teams; used to get the names of each team
+//        NFC[] is an array containing NFC conference playoff teams
+//        AFC[] is an array containing AFC conference playoff teams 
+// post: Winners of every championship game will have currPlayoffRound increased by 1
+void simConfChampionship(Team tSet[], int NFC[], int AFC[]);
+
+// Simulates the conference championship round for a single NFL conference
+// Input: tSet[] is an array of NFL teams; used to get the names of each team
+//        conference indicates the conference currently being simulated
+// post: Winners of every championship game will have currPlayoffRound increased by 1
+void simConfChampionship(Team tSet[], int conference[]);
+
+// Simulates Superbowl 56
+// Input: tSet[] is an array of NFL teams; used to get the names of each team and their current playoff round
+// output: Winner of Super Bowl 56
+void simSuperBowl(Team tSet[]);
+
+// Simulates the 2021-22 NFL Playoffs
+// Input: tSet[] is an array of NFL teams; used to get the names of each team
+//        NFC[] is an array containing NFC conference playoff teams
+//        AFC[] is an array containing AFC conference playoff teams 
+//  post: currPlayoffRound increases with each playoff win. Final output is Super Bowl 56 Champion
+void simPlayoffs(Team tSet[], int NFC[], int AFC[]);
+
 int main() {
     srand(time(NULL)); //Random seed for game simulations
 
@@ -201,10 +235,7 @@ int main() {
     }
     divRankings(nflTeams);
     playoffSeeding(nflTeams, NFCPlayoffTeams, AFCPlayoffTeams);
-    cout << endl; //Gap for printing purposes
-    simWildcard(nflTeams, NFCPlayoffTeams, AFCPlayoffTeams);
-    simDivisional(nflTeams, NFCPlayoffTeams, AFCPlayoffTeams);
-    
+    simPlayoffs(nflTeams, NFCPlayoffTeams, AFCPlayoffTeams);
 }
 
 
@@ -415,6 +446,7 @@ int numTeamsSeeded = 0; bool currTeamSeeded;
             numTeamsSeeded++;
         }
     }
+    tSet[playoffArr[0]].currPlayoffRound = 1;
 }
 
 
@@ -483,7 +515,7 @@ void simDivisional(Team tSet[], int NFC[], int AFC[]) {
 }
 
 void simConfDivsional(Team tSet[], int conference[]) {
-    bool foundLowestSeed = false; int currSeed = 6, match2FoundTeams = 0; int match2[2] = {-1, -1};
+    bool foundLowestSeed = false; int currSeed = 6; int match2[2] = {-1, -1};
     while(foundLowestSeed == false) { //Runs until we find lowest remaining seed for this conference
         if(tSet[conference[currSeed]].currPlayoffRound == 1) { //Checks if the current team we are looking at is in the Divisional round
             playPlayoffGame(tSet, conference[0], conference[currSeed]);
@@ -491,12 +523,60 @@ void simConfDivsional(Team tSet[], int conference[]) {
         }
         currSeed--; //Decriments down to next highest seed
     }
-    while (match2FoundTeams != 2) { //Runs until we find other 2 teams playing in the current round
-        if(tSet[conference[currSeed]].currPlayoffRound == 1) { //Checks if current team is in the current round
-            match2[match2FoundTeams] = conference[currSeed]; //Sets one opponent
-            match2FoundTeams++; //We have found one more team in this game
+    findPlayoffMatch(tSet, conference, match2, 1, currSeed);
+    playPlayoffGame(tSet, match2[1], match2[0]);
+}
+
+void simConfChampionship(Team tSet[], int NFC[], int AFC[]) {
+    cout << "NFC CONFERENCE CHAMPIONSHIP" << endl;
+    simConfChampionship(tSet, NFC);
+    cout << endl << "AFC CONFERENCE CHAMPIONSHIP" << endl;
+    simConfChampionship(tSet, AFC);
+    cout << endl;
+}
+
+void simConfChampionship(Team tSet[], int conference[]) {
+    int match[2] = {-1, -1}; int currSeed = 6;
+    findPlayoffMatch(tSet, conference, match, 2, currSeed);
+    playPlayoffGame(tSet, match[1], match[0]);
+}
+
+void findPlayoffMatch(Team tSet[], int conference[], int teams[], int currRound, int currSeed) {
+    int foundTeams = 0;
+    while (foundTeams != 2) { //Runs until we find other 2 teams playing in the current round
+        if(tSet[conference[currSeed]].currPlayoffRound == currRound) { //Checks if current team is in the current round
+            teams[foundTeams] = conference[currSeed]; //Sets one opponent
+            foundTeams++; //We have found one more team in this game
         }
         currSeed--;
     }
-    playPlayoffGame(tSet, match2[1], match2[0]);
 }
+
+void simSuperBowl(Team tSet[]) {
+    int match[2] = {-1, -1}; int foundTeams = 0;
+    for(int i = 0; i < NUM_TEAMS; i++) { //Runs through every NFL team
+        if(tSet[i].currPlayoffRound == 3) { //Checks if they are in the superbowl
+            match[foundTeams] = i;
+            foundTeams++;
+        }
+        if(foundTeams == 2) { //Breaks when we find our two teams
+            break;
+        }
+    }
+    cout << "SUPER BOWL 56" << endl;
+    playPlayoffGame(tSet, match[1], match[0]);
+    if(tSet[match[0]].currPlayoffRound == 4) { //Finds our winner for printing reasons
+        cout << "The " << tSet[match[0]].team_name << " are your Super Bowl 56 Champions!!!";
+    } else {
+        cout << "The " << tSet[match[1]].team_name << " are your Super Bowl 56 Champions!!!";
+    }
+}
+
+void simPlayoffs(Team tSet[], int NFC[], int AFC[]) {
+    cout << endl; //Gap for printing purposes
+    simWildcard(tSet, NFC, AFC);
+    simDivisional(tSet, NFC, AFC);
+    simConfChampionship(tSet, NFC, AFC);
+    simSuperBowl(tSet);
+}
+
