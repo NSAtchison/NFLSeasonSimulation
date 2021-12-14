@@ -58,7 +58,7 @@ NOTE: Arrows indicate what functions are in other functions on a single lines (i
 
 **Works Cited**
 
-Resources used:
+**Resources used:**
 
 Bracket Example 2 from final Project: Accessed multiple times for several functions. https://whitgit.whitworth.edu/2021/fall/CS-171-3/Group_Projects/CS1_Final_Project/CS1_Final_Project_Edgewood.git
 
@@ -70,7 +70,7 @@ Pro Football Reference: Accessed one time for historical head-to-head informatio
 
 NFL Website: Accessed one time for 2021-22 NFL Regular Season Schedule. https://www.nfl.com/
 
-Libraries used
+**Libraries used:**
 
 iostream
 
