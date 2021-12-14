@@ -1,3 +1,8 @@
+// Nathan Atchison & John Twutchell
+// December 18, 2021
+// CS-171-3
+// License: Copyright 2021 Nathan Atchison & John Twitchell
+
 #include <iostream>
 #include <string>
 #include <ctime>
@@ -548,7 +553,7 @@ void findPlayoffMatch(Team tSet[], int conference[], int teams[], int currRound,
             teams[foundTeams] = conference[currSeed]; //Sets one opponent
             foundTeams++; //We have found one more team in this game
         }
-        currSeed--;
+        currSeed--; //Moves to next highest seed
     }
 }
 
