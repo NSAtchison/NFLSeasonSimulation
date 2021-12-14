@@ -57,17 +57,22 @@ NOTE: Arrows indicate what functions are in other functions on a single lines (i
 10. Tons of breaking down of functions into multiple parts as each part was simpler on it's own (also allowed for us to easily find bugs if there was any)
 
 **Works Cited**
+
 Resources used:
 
 Bracket Example 2 from final Project: Accessed multiple times for several functions. https://whitgit.whitworth.edu/2021/fall/CS-171-3/Group_Projects/CS1_Final_Project/CS1_Final_Project_Edgewood.git
+
 LM8 code: Accessed time for divRankings function. https://whitgit.whitworth.edu/2021/fall/CS-171-3/natchison25/LM8_Passing_By_Reference.git
+
 LM9 code: Accessed one time for playoffSeeding function. https://whitgit.whitworth.edu/2021/fall/CS-171-3/natchison25/LM9_Arrays.git
+
 Pro Football Reference: Accessed one time for historical head-to-head information. https://www.pro-football-reference.com/
+
 NFL Website: Accessed one time for 2021-22 NFL Regular Season Schedule. https://www.nfl.com/
 
 Libraries used
 
-<iostream>
-<string>
-<ctime>
-<random>
+iostream
+string
+ctime
+random
