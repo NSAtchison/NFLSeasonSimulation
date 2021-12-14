@@ -8,7 +8,7 @@
 #include <ctime>
 #include <random>
 #include "..\headers\team.h"
-#include "functions.h"
+#include "..\headers\functions.h"
 using namespace std;
 
 
