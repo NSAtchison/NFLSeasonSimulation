@@ -3,12 +3,7 @@
 The overall idea of our project was to run a full season simulation from the beginning of Week 1 through Superbowl 56. For the regular season, our function would find every team playing for a single week, simulate their games with their opponents, then update their wins and losses accordingly. We would do this for all 18 weeks of the regular season as each team would play 17 total games with a singular bye week between the weeks 6 and 14. After the completion of the regular season, we would print out the division rankings from first to last. Next we found all of our playoff teams and seeded them from 1 to 7 for both the AFC and the NFC conferences by first seeding the division winners, then find and seeding the wildcard teams accordingly. Finally, our function simulated the 2021-22 NFL Playoffs with the 14 teams (7 from each conference) that made the playoffs, finally deciding the Superbowl 56 champion.
 
 **What assumptions did we make?**
-
-1. Historical head-to-head is indicative of a team's performance in this current season regardless of the 
-   team's current players and coaching staff.
-2. Teams were assigned a number at the beginning and that number correlated to who they were.
-3. Win percentage is static throughout the entire season.
-4. Tiebreakers don't exist in our simulation, so seeding comes down to who comes first in the alphabet
+There are two primary assumptions in the construction of this program. The first of which being that the win chance of each team against each other is static, previous results within the program doesn't alter future matches against the same team. Furthermore, this win chance is from the team's life time win-loss record against all the other teams, thereby having the quality of the players on the team and coaching staff of that team not play a factor in how the teams ability to perform within the simulation. The second assumption is that tiebreakers for seeding isn't in this simulation, if there is a tie for win-loss for being seeded as a wildcard it comes down to which team comes first in the alphabet due to how the teams were initilized. 
 
 **Flowchart of Functions** 
 NOTE: Arrows indicate what functions are in other functions on a single lines (i.e in line 24, printOnBye is in the function regSeasonWeek. Vertical arrows indicate progress through a function (i.e. in lines 37-49, those four functions progress in that order within simPlayoffs). If the statement "data used" is in a line, it indicates that the information of the right or above was found earlier and used in the function that is being pointed at. The most central column of functions (initalizeTeams->regSeasonWeek, etc.) is the functions within our main function.
@@ -45,16 +40,12 @@ NOTE: Arrows indicate what functions are in other functions on a single lines (i
     simSuperBowl                             
 
 **Analysis, Overview, and Justification of Design**
-1. NFL Season is a linear progression
-2. Simplest way of deciding games was head-to-head data
-3. playoff rounds allow us to indicate who's still in playoffs
-4. printing division rankings allowed us to easily find division winners
-5. using arrays rather than a attribute for Teams allowed us to easily simulate playoffs (for seeding)
-6. Having a schedule array allowed us to easily find teams who played each other
-7. Using numbers to help indicate teams allowed for easier use when it came to scheduling/finding win percentages
-8. Array of teams initilized at the start made for easy access to each team when necessary
-9. Lack of return values because arrays were much easiers to deal with when it came to this simulation
-10. Tons of breaking down of functions into multiple parts as each part was simpler on it's own (also allowed for us to easily find bugs if there was any)
+The NFL season is very linear in how it progresses, as it has the regular season of games with the top ranking of division and then conference moving up to eventually find the champion at the end of the playoff season. This simulation emulates that to the best of the developers current know how, capabilities, and time constraints.
+The easiest way, and one that best fits the short time span of the project, for determining the winning team was by life time records and win percentages against each other team. While player data and statistics would provide a more accurate result for win percentages, the scope of designing how each player of each team, and each play from each team and how they all interact with one another with the time constraint and the developers know how was just not feasible. Therefore, in terms of reasonability and simplicity life time win percentages was the best available option.
+The printing of division rankings and the winners and losers of each game, allowed for not only ease of double checking to make sure the results are accurate for who progresses into the playoff season and how the playoff season is progressing properly,but also for allowing the user to see the flow of how the simulation progresses over time.
+Another tool used for ease of life for coding was the use of arrays for position within the conference for playoffs rather than having it be an atrribute of the team. While both are feasible options, arrays were the most intuitive for the developers in how we would implement and use for seeding the teams for playoffs. Arrays also provided the additional benefit of passing by reference so we never needed to return a value and all our manipulations can be easily found and managed without additional time spent on creating new variables and resources.
+The NFL official schedule array was a nice tool as it provided a convient way to progress through the season, see who the played was correct, and make sure that each team was getting the proper amount of games played and correct number of bye weeks.
+The array of all thirty-two NFL teams connecting to the Teams Class which held access to their pertainant information such as: if they made it to the playoffs, which round in the playoffs did they make it to, access to the array to check their win percentage against the other teams, and so forth. Therby making it easy to access and progress them throughout the entirety of the simulation. 
 
 **Works Cited**
 
